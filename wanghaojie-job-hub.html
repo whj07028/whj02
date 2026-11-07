@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>王浩杰 · 2027届秋招作战中枢</title>
+<style>
+  :root{
+    --bg:#f5f7fa; --card:#ffffff; --ink:#1f2d3d; --sub:#7a8a99;
+    --blue:#2563eb; --blue-l:#e8efff; --green:#16a34a; --orange:#ea580c;
+    --red:#dc2626; --line:#e5eaf0; --radius:12px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px 60px}
+  /* 顶部 */
+  header.top{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:36px 0 28px}
+  header.top .wrap{padding-bottom:0}
+  .top h1{font-size:26px;letter-spacing:1px}
+  .top .tagline{opacity:.85;margin-top:6px;font-size:14px}
+  .stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px}
+  .stat{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 18px;min-width:120px}
+  .stat b{font-size:22px;display:block}
+  .stat span{font-size:12px;opacity:.8}
+  /* 导航 */
+  nav{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--line);margin:0 -20px;padding:0 20px;display:flex;gap:4px;overflow-x:auto}
+  nav button{border:none;background:none;padding:12px 14px;font-size:14px;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+  nav button.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+  /* 卡片 */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin-top:20px}
+  .card h2{font-size:17px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--blue);display:inline-block}
+  .card .hint{font-size:12px;color:var(--sub);margin-bottom:14px}
+  section.page{display:none}
+  section.page.show{display:block}
+  /* 通用表单 */
+  input,select,textarea{font-family:inherit;font-size:13px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#fbfcfe;color:var(--ink);outline:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+  textarea{width:100%;min-height:64px;resize:vertical}
+  .btn{display:inline-block;border:none;background:var(--blue);color:#fff;font-size:13px;padding:8px 16px;border-radius:8px;cursor:pointer}
+  .btn:hover{filter:brightness(1.1)}
+  .btn.ghost{background:#eef2f7;color:var(--ink)}
+  .btn.sm{padding:4px 10px;font-size:12px;border-radius:6px}
+  .btn.danger{background:#fee2e2;color:var(--red)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{background:#f2f6fb;text-align:left;color:var(--sub);font-weight:600}
+  th,td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+  td input,td select{width:100%;border-color:transparent;background:transparent}
+  td input:hover,td select:hover,td input:focus,td select:focus{border-color:var(--line);background:#fff}
+  /* 状态徽章 */
+  .badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;white-space:nowrap}
+  .b-投递中{background:var(--blue-l);color:var(--blue)}
+  .b-笔试{background:#fef3c7;color:#b45309}
+  .b-面试{background:#f3e8ff;color:#7c3aed}
+  .b-Offer{background:#dcfce7;color:var(--green)}
+  .b-挂{background:#fee2e2;color:var(--red)}
+  /* 任务清单 */
+  .todo{display:flex;align-items:center;gap:10px;padding:10px 6px;border-bottom:1px dashed var(--line)}
+  .todo input[type=checkbox]{width:18px;height:18px;accent-color:var(--blue);flex:none}
+  .todo .txt{flex:1;font-size:14px}
+  .todo.done .txt{text-decoration:line-through;color:var(--sub)}
+  /* 进度条 */
+  .prog{margin:14px 0}
+  .prog .lbl{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+  .bar{height:8px;background:#edf1f6;border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--blue);border-radius:99px;transition:width .3s}
+  /* 题库卡片 */
+  .qa{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;background:#fbfcfe}
+  .qa .q{font-weight:600;font-size:14px;display:flex;justify-content:space-between;gap:10px}
+  .qa .a{font-size:13px;color:#405060;margin-top:6px;white-space:pre-wrap}
+  /* 机会列表 */
+  .opp{display:flex;gap:12px;align-items:flex-start;padding:12px 6px;border-bottom:1px dashed var(--line)}
+  .opp .name{font-weight:600;font-size:14px;min-width:120px}
+  .opp .desc{font-size:13px;color:#405060;flex:1}
+  .footer-bar{display:flex;gap:10px;justify-content:flex-end;margin-top:24px;flex-wrap:wrap}
+  .pill{display:inline-block;background:var(--blue-l);color:var(--blue);border-radius:99px;padding:3px 12px;font-size:12px;margin:3px 4px 0 0}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1f2d3d;color:#fff;padding:10px 22px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .3s}
+  .hidden{display:none!important}
+  @media(max-width:720px){.top h1{font-size:20px}.stat{min-width:100px;padding:8px 12px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>王浩杰 · 2027届秋招作战中枢</h1>
+    <div class="tagline">数据产品经理 / 数据分析师 · 华北电力大学 应用统计硕士 · 目标：2027届校招 Offer</div>
+    <div class="stats">
+      <div class="stat"><b id="countdown">--</b><span>距毕业（2027.06.30）</span></div>
+      <div class="stat"><b id="stTotal">0</b><span>累计投递</span></div>
+      <div class="stat"><b id="stActive">0</b><span>流程中</span></div>
+      <div class="stat"><b id="stOffer">0</b><span>Offer</span></div>
+      <div class="stat"><b id="stRate">0%</b><span>面试转化率</span></div>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+<nav id="nav">
+  <button data-page="dash" class="active">今日作战</button>
+  <button data-page="track">投递追踪</button>
+  <button data-page="opp">可投机会</button>
+  <button data-page="study">学习规划</button>
+  <button data-page="qa">面试题库</button>
+  <button data-page="review">复盘日记</button>
+  <button data-page="me">个人主页</button>
+</nav>
+
+<!-- ============ 今日作战 ============ -->
+<section class="page show" id="page-dash">
+  <div class="card">
+    <h2><span class="dot"></span>今日该做什么</h2>
+    <div class="hint">勾选即完成，自动保存。每日建议：新增投递≥3 · SQL/行测各1组 · 面试复盘1条（如有）</div>
+    <div id="todoList"></div>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <input id="todoInput" placeholder="添加今日任务，回车确认" style="flex:1">
+      <button class="btn" onclick="addTodo()">添加</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2><span class="dot"></span>本周聚焦</h2>
+    <div class="hint">每周一更新，只写最关键的3件事</div>
+    <textarea id="weeklyFocus" placeholder="例如：1. 完成数据产品经理简历定稿  2. 字节内推投递  3. SQL 真题10道"></textarea>
+  </div>
+  <div class="card">
+    <h2><span class="dot"></span>求职宣言（面试自我介绍主线）</h2>
+    <div class="hint">所有面试的统一叙事，可编辑</div>
+    <textarea id="manifesto">统计背景 + 4段数据驱动实习 + 数据产品落地经验，擅长用数据指标体系解决业务问题，并能用 AI 工具提效的数据产品经理。</textarea>
+  </div>
+</section>
+
+<!-- ============ 投递追踪 ============ -->
+<section class="page" id="page-track">
+  <div class="card">
+    <h2><span class="dot"></span>投递记录</h2>
+    <div class="hint">漏斗口径：投递 → 笔试 → 面试 → Offer。状态改动自动刷新顶部统计。下一步栏写"等笔试通知/周三前复盘"等催办动作。</div>
+    <div style="overflow-x:auto">
+    <table id="trackTable">
+      <thead><tr>
+        <th style="width:130px">公司</th><th style="width:150px">岗位</th><th style="width:100px">方向</th>
+        <th style="width:90px">渠道</th><th style="width:100px">投递日期</th>
+        <th style="width:90px">状态</th><th>下一步动作</th><th style="width:56px"></th>
+      </tr></thead>
+      <tbody id="trackBody"></tbody>
+    </table>
+    </div>
+    <button class="btn ghost sm" style="margin-top:12px" onclick="addTrack()">+ 添加一条投递</button>
+  </div>
+</section>
+
+<!-- ============ 可投机会 ============ -->
+<section class="page" id="page-opp">
+  <div class="card">
+    <h2><span class="dot"></span>目标公司清单</h2>
+    <div class="hint">主攻数据产品 / 副攻数据分析。渠道以官网校招+实习同事内推优先；每年8–10月、次年2–4月刷新开放状态。</div>
+    <div id="oppList"></div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <input id="oppName" placeholder="公司" style="width:140px">
+      <input id="oppDesc" placeholder="目标岗位 / 渠道 / 内推人" style="flex:1;min-width:200px">
+      <button class="btn" onclick="addOpp()">添加</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2><span class="dot"></span>渠道备忘</h2>
+    <div class="hint">固定信息源，每周扫一遍即可，不用天天刷</div>
+    <div style="font-size:13px;color:#405060">
+      <p>· 各公司校招官网 / 官方公众号（信息最准）</p>
+      <p>· 实习转正：百度（2026.08 结束实习）——主动联系 mentor 询问留用/回流政策</p>
+      <p>· 内推：字节、百度实习同事 > 牛客/脉脉找同校校友</p>
+      <p>· 银行/券商数字化岗：统计硕士适配，关注工行、招行、券商金融科技条线（10–12月集中开放）</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 学习规划 ============ -->
+<section class="page" id="page-study">
+  <div class="card">
+    <h2><span class="dot"></span>备考进度</h2>
+    <div class="hint">点击进度条右侧数值可手动改百分比；任务全部完成时进度自动 100%</div>
+    <div id="studyList"></div>
+  </div>
+  <div class="card">
+    <h2><span class="dot"></span>添加学习任务</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <select id="studyCat" style="width:120px">
+        <option>SQL</option><option>Python</option><option>行测</option><option>面试</option>
+      </select>
+      <input id="studyTask" placeholder="任务，如：牛客SQL真题 非技术快速入门 第11-20题" style="flex:1;min-width:200px">
+      <button class="btn" onclick="addStudy()">添加</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 面试题库 ============ -->
+<section class="page" id="page-qa">
+  <div class="card">
+    <h2><span class="dot"></span>高频面试题</h2>
+    <div class="hint">掌握度：○未准备 / ○○可讲 / ○○○熟练。答案要点写关键词即可，倒逼自己开口讲。</div>
+    <div id="qaList"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      <input id="qaQ" placeholder="题目" style="flex:2;min-width:180px">
+      <input id="qaA" placeholder="回答要点" style="flex:3;min-width:220px">
+      <button class="btn" onclick="addQa()">添加</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 复盘日记 ============ -->
+<section class="page" id="page-review">
+  <div class="card">
+    <h2><span class="dot"></span>笔面试复盘（48小时内记录）</h2>
+    <div class="hint">只记"答不上来的题 + 下次怎么改"，别写流水账</div>
+    <div id="revList"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      <input id="revDate" type="date" style="width:150px">
+      <input id="revText" placeholder="例：美团一面——被问AB实验样本量计算卡住，周末补《统计功效》专题" style="flex:1;min-width:220px">
+      <button class="btn" onclick="addRev()">记录</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 个人主页 ============ -->
+<section class="page" id="page-me">
+  <div class="card">
+    <h2><span class="dot"></span>王浩杰</h2>
+    <div class="hint">简历要点速览，面试前看一遍</div>
+    <p style="font-size:14px;margin-bottom:10px">华北电力大学（北京） 应用统计 硕士 · 2027届 · 专业排名 5/68<br>
+    本科：北华大学 应用统计 · 排名 7/49</p>
+    <span class="pill">Python</span><span class="pill">SQL</span><span class="pill">R</span><span class="pill">PowerBI</span><span class="pill">机器学习/深度学习</span><span class="pill">AI Agent 工作流</span>
+    <div style="margin-top:16px;font-size:13px;color:#405060;line-height:2">
+      <b>百度</b>（2026.04–2026.08）数据产品经理：搜索业务数据需求全链路，累计承接需求40+；搭建通用指标体系，需求效率 3–5个/周 → 8–10个/周；搭建AI工作流并与研发Agent对接。<br>
+      <b>字节跳动</b>（2025.10–2026.04）产品运营：独立完成3次用户调研，13条建议被采纳带动DAU +0.5%；营销券体验专项主要负责人，券CPO 38→34；电商营销数据看板与AB实验监控。<br>
+      <b>作业帮</b>（2025.04–2025.08）用户数据运营：搭建客户奖惩运营体系，客户体量 +80%；主导反作弊项目，作弊率 2%→0.3%。<br>
+      <b>北京与爱为舞</b>（2024.12–2025.03）数据分析：主播直播效益回归/时序分析；AB实验收益环比 +3%。<br>
+      <b>科研</b>（一作，EI会议）：CM-DUW 多模态情绪识别，公开数据集 Acc 72.77% 超基线 70.53%。
+    </div>
+  </div>
+</section>
+
+<div class="footer-bar">
+  <button class="btn ghost" onclick="exportData()">导出备份(JSON)</button>
+  <button class="btn ghost" onclick="document.getElementById('importFile').click()">导入备份</button>
+  <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
+  <button class="btn danger" onclick="clearAll()">清空全部数据</button>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var KEY='wj_jobhub_v1';
+var STATUS=['投递中','笔试','面试','Offer','挂'];
+var DEFAULT={
+  todos:[
+    {t:'新增投递 3 家公司（官网+内推）',done:false},
+    {t:'SQL 真题一组（限时）',done:false},
+    {t:'行测一组（限时）',done:false},
+    {t:'面试题库开口练习 2 题',done:false}
+  ],
+  tracks:[
+    {co:'（示例）百度',job:'数据产品经理',dir:'数据产品',ch:'实习回流',date:'2026-11-01',st:'面试',next:'等二面通知，周一跟进mentor'},
+    {co:'（示例）字节跳动',job:'数据分析师',dir:'数据分析',ch:'内推',date:'2026-11-03',st:'投递中',next:'11/10前无消息则询问进度'}
+  ],
+  opps:[
+    {name:'百度',desc:'数据产品经理（实习回流优先，联系 mentor）'},
+    {name:'字节跳动',desc:'数据分析师 / 产品运营，找实习同事内推'},
+    {name:'美团',desc:'数据产品经理，官网秋招第二批'},
+    {name:'快手',desc:'数据分析师，校招官网'},
+    {name:'银行数字化岗',desc:'工行/招行/券商金科，10–12月集中开放'}
+  ],
+  study:[
+    {cat:'SQL',tasks:[{t:'牛客SQL真题：非技术快速入门全部',done:true},{t:'窗口函数专题 10 题',done:false},{t:'业务场景SQL（留存/漏斗）10 题',done:false}]},
+    {cat:'行测',tasks:[{t:'言语理解 2 组',done:false},{t:'资料分析 2 组（提速度）',done:false}]},
+    {cat:'面试',tasks:[{t:'产品Sense 30题：指标体系类',done:false},{t:'统计基础：AB实验/假设检验/功效',done:false},{t:'CM-DUW 论文 15 分钟完整讲述',done:false}]},
+    {cat:'Python',tasks:[{t:'pandas 数据处理 5 道真题',done:false}]}
+  ],
+  qa:[
+    {q:'自我介绍（90秒版）',a:'统计硕士+4段数据实习 → 百度数据产品40+需求落地 → 擅长指标体系与AI提效 → 为什么选数据产品',lv:1},
+    {q:'如何搭建一个业务的指标体系？',a:'北极星指标→拆模块过程指标→埋点与口径→看板与异动监控（字节券CPO案例）',lv:0},
+    {q:'AB实验如何设计？样本量怎么估？',a:'随机分流→显著性/功效→MDE→样本量公式→实验周期覆盖完整业务周期（直播AB案例）',lv:0},
+    {q:'实习中最大的困难？',a:'百度：多需求并发下的口径冲突 → 建通用指标体系+AI工作流标准化',lv:0},
+    {q:'为什么从运营转数据产品？',a:'运营中发现需求落地链路效率低 → 更想做标准化工具与机制 → 百度验证',lv:0}
+  ],
+  revs:[{d:'2026-11-05',t:'（示例）某厂一面：指标异动排查思路不清。改进：背"维度拆分→内外因→AB定位"框架，再练2题'}],
+  weekly:'', manifesto:'统计背景 + 4段数据驱动实习 + 数据产品落地经验，擅长用数据指标体系解决业务问题，并能用 AI 工具提效的数据产品经理。'
+};
+var D;
+function load(){
+  try{var s=localStorage.getItem(KEY);D=s?JSON.parse(s):JSON.parse(JSON.stringify(DEFAULT));}
+  catch(e){D=JSON.parse(JSON.stringify(DEFAULT));}
+  if(!D.study)D.study=[];
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(D));}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.style.opacity=1;setTimeout(function(){t.style.opacity=0;},1600);}
+
+/* 导航 */
+document.getElementById('nav').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('nav button').forEach(function(x){x.classList.remove('active')});
+  b.classList.add('active');
+  document.querySelectorAll('section.page').forEach(function(s){s.classList.remove('show')});
+  document.getElementById('page-'+b.dataset.page).classList.add('show');
+});
+
+/* 今日任务 */
+function renderTodos(){
+  var box=document.getElementById('todoList');box.innerHTML='';
+  D.todos.forEach(function(o,i){
+    var d=document.createElement('div');d.className='todo'+(o.done?' done':'');
+    d.innerHTML='<input type="checkbox" '+(o.done?'checked':'')+' onchange="toggleTodo('+i+')"><span class="txt"></span><button class="btn danger sm" onclick="delTodo('+i+')">删</button>';
+    d.querySelector('.txt').textContent=o.t;
+    box.appendChild(d);
+  });
+}
+function addTodo(){var i=document.getElementById('todoInput');var v=i.value.trim();if(!v)return;D.todos.push({t:v,done:false});i.value='';save();renderTodos();}
+function toggleTodo(i){D.todos[i].done=!D.todos[i].done;save();renderTodos();}
+function delTodo(i){D.todos.splice(i,1);save();renderTodos();}
+document.getElementById('todoInput').addEventListener('keydown',function(e){if(e.key==='Enter')addTodo();});
+
+/* 投递追踪 */
+function renderTracks(){
+  var tb=document.getElementById('trackBody');tb.innerHTML='';
+  D.tracks.forEach(function(r,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><input value="" data-f="co"></td><td><input value="" data-f="job"></td>'+
+      '<td><select data-f="dir"><option>数据产品</option><option>数据分析</option><option>运营</option><option>其他</option></select></td>'+
+      '<td><input value="" data-f="ch"></td><td><input type="date" value="" data-f="date"></td>'+
+      '<td><select data-f="st">'+STATUS.map(function(s){return '<option>'+s+'</option>'}).join('')+'</select></td>'+
+      '<td><input value="" data-f="next"></td><td><button class="btn danger sm" onclick="delTrack('+i+')">删</button></td>';
+    tr.querySelectorAll('[data-f]').forEach(function(el){
+      var f=el.dataset.f;if(el.tagName==='SELECT')el.value=r[f]||el.options[0].value;else el.value=r[f]||'';
+      el.addEventListener('change',function(){r[f]=el.value;save();renderStats();});
+    });
+    tb.appendChild(tr);
+  });
+  renderStats();
+}
+function addTrack(){D.tracks.push({co:'',job:'',dir:'数据产品',ch:'官网',date:new Date().toISOString().slice(0,10),st:'投递中',next:''});save();renderTracks();}
+function delTrack(i){D.tracks.splice(i,1);save();renderTracks();}
+function renderStats(){
+  var t=D.tracks.length;
+  var off=D.tracks.filter(function(r){return r.st==='Offer'}).length;
+  var active=D.tracks.filter(function(r){return ['笔试','面试'].indexOf(r.st)>=0}).length;
+  var iv=D.tracks.filter(function(r){return ['面试','Offer'].indexOf(r.st)>=0}).length;
+  document.getElementById('stTotal').textContent=t;
+  document.getElementById('stActive').textContent=active;
+  document.getElementById('stOffer').textContent=off;
+  document.getElementById('stRate').textContent=(t?Math.round(iv/t*100):0)+'%';
+}
+
+/* 机会 */
+function renderOpps(){
+  var box=document.getElementById('oppList');box.innerHTML='';
+  D.opps.forEach(function(o,i){
+    var d=document.createElement('div');d.className='opp';
+    d.innerHTML='<span class="name"></span><span class="desc"></span><button class="btn danger sm">删</button>';
+    d.querySelector('.name').textContent=o.name;d.querySelector('.desc').textContent=o.desc;
+    d.querySelector('button').onclick=function(){D.opps.splice(i,1);save();renderOpps();};
+    box.appendChild(d);
+  });
+}
+function addOpp(){
+  var n=document.getElementById('oppName').value.trim(),c=document.getElementById('oppDesc').value.trim();
+  if(!n)return;D.opps.push({name:n,desc:c});document.getElementById('oppName').value='';document.getElementById('oppDesc').value='';save();renderOpps();
+}
+
+/* 学习 */
+function catPct(cat){var a=cat.tasks;if(!a.length)return 0;var d=a.filter(function(x){return x.done}).length;return Math.round(d/a.length*100);}
+function renderStudy(){
+  var box=document.getElementById('studyList');box.innerHTML='';
+  D.study.forEach(function(cat,ci){
+    var pct=catPct(cat);
+    var h='<div class="prog"><div class="lbl"><b>'+cat.cat+'</b><span>'+pct+'%　<a href="#" onclick="setPct('+ci+');return false" style="font-size:12px">手动调整</a></span></div><div class="bar"><i style="width:'+pct+'%"></i></div></div>';
+    cat.tasks.forEach(function(tk,ti){
+      h+='<div class="todo'+(tk.done?' done':'')+'"><input type="checkbox" '+(tk.done?'checked':'')+' onchange="toggleStudy('+ci+','+ti+')"><span class="txt"></span><button class="btn danger sm" onclick="delStudy('+ci+','+ti+')">删</button></div>';
+    });
+    var div=document.createElement('div');div.innerHTML=h;div.querySelectorAll('.txt').forEach(function(el,idx){el.textContent=cat.tasks[idx].t;});
+    box.appendChild(div);
+  });
+}
+function setPct(ci){
+  var v=prompt('输入百分比 0-100（仅手动记录用，任务勾选仍是主口径）','');if(v===null)return;
+  toast('已记录：'+cat.cat+' '+v+'%');
+}
+function toggleStudy(ci,ti){D.study[ci].tasks[ti].done=!D.study[ci].tasks[ti].done;save();renderStudy();}
+function delStudy(ci,ti){D.study[ci].tasks.splice(ti,1);save();renderStudy();}
+function addStudy(){
+  var c=document.getElementById('studyCat').value,t=document.getElementById('studyTask').value.trim();if(!t)return;
+  var cat=D.study.find(function(x){return x.cat===c});
+  if(!cat){cat={cat:c,tasks:[]};D.study.push(cat);}
+  cat.tasks.push({t:t,done:false});document.getElementById('studyTask').value='';save();renderStudy();
+}
+
+/* 题库 */
+var LV=['○','○○','○○○'];
+function renderQa(){
+  var box=document.getElementById('qaList');box.innerHTML='';
+  D.qa.forEach(function(o,i){
+    var d=document.createElement('div');d.className='qa';
+    d.innerHTML='<div class="q"><span class="qt"></span><span style="white-space:nowrap;cursor:pointer" title="点击切换掌握度" onclick="lvQa('+i+')"></span></div><div class="a"></div><div style="margin-top:8px"><button class="btn danger sm" onclick="delQa('+i+')">删除</button></div>';
+    d.querySelector('.qt').textContent=o.q;d.querySelector('.a').textContent=o.a||'（待补充要点）';
+    d.querySelector('[title]').textContent=LV[o.lv]||'○';
+    box.appendChild(d);
+  });
+}
+function lvQa(i){D.qa[i].lv=((D.qa[i].lv||0)+1)%3;save();renderQa();}
+function delQa(i){D.qa.splice(i,1);save();renderQa();}
+function addQa(){
+  var q=document.getElementById('qaQ').value.trim(),a=document.getElementById('qaA').value.trim();if(!q)return;
+  D.qa.push({q:q,a:a,lv:0});document.getElementById('qaQ').value='';document.getElementById('qaA').value='';save();renderQa();
+}
+
+/* 复盘 */
+function renderRevs(){
+  var box=document.getElementById('revList');box.innerHTML='';
+  D.revs.slice().reverse().forEach(function(r){
+    var idx=D.revs.indexOf(r);
+    var d=document.createElement('div');d.className='todo';
+    d.innerHTML='<b style="flex:none;font-size:13px;color:var(--sub)"></b><span class="txt" style="font-size:13px"></span><button class="btn danger sm">删</button>';
+    d.querySelector('b').textContent=r.d;d.querySelector('.txt').textContent=r.t;
+    d.querySelector('button').onclick=function(){D.revs.splice(idx,1);save();renderRevs();};
+    box.appendChild(d);
+  });
+}
+function addRev(){
+  var d=document.getElementById('revDate').value||new Date().toISOString().slice(0,10);
+  var t=document.getElementById('revText').value.trim();if(!t)return;
+  D.revs.push({d:d,t:t});document.getElementById('revText').value='';save();renderRevs();
+}
+
+/* 文本区 */
+function bindText(id,field){
+  var el=document.getElementById(id);el.value=D[field]||'';
+  el.addEventListener('input',function(){D[field]=el.value;save();});
+}
+
+/* 倒计时 */
+function tick(){
+  var end=new Date('2027-06-30T00:00:00');
+  var now=new Date();var days=Math.max(0,Math.ceil((end-now)/86400000));
+  var el=document.getElementById('countdown');
+  el.textContent=days+' 天';
+}
+
+/* 导入导出 */
+function exportData(){
+  var blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='秋招数据备份.json';a.click();
+}
+function importData(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){try{D=JSON.parse(r.result);save();init();toast('导入成功');}catch(err){toast('文件格式错误');}};
+  r.readAsText(f);e.target.value='';
+}
+function clearAll(){
+  if(!confirm('确定清空全部数据？建议先导出备份。'))return;
+  localStorage.removeItem(KEY);D=JSON.parse(JSON.stringify(DEFAULT));init();toast('已恢复初始状态');
+}
+
+function init(){
+  renderTodos();renderTracks();renderOpps();renderStudy();renderQa();renderRevs();
+  bindText('weeklyFocus','weekly');bindText('manifesto','manifesto');tick();
+}
+load();init();setInterval(tick,60000);
+</script>
+</body>
+</html>
