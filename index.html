@@ -49,11 +49,11 @@
   td input:hover,td select:hover,td input:focus,td select:focus{border-color:var(--line);background:#fff}
   /* 状态徽章 */
   .badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;white-space:nowrap}
-  .b-投递中{background:var(--blue-l);color:var(--blue)}
-  .b-笔试{background:#fef3c7;color:#b45309}
-  .b-面试{background:#f3e8ff;color:#7c3aed}
-  .b-Offer{background:#dcfce7;color:var(--green)}
-  .b-挂{background:#fee2e2;color:var(--red)}
+  .b-touzhong{background:var(--blue-l);color:var(--blue)}
+  .b-bishi{background:#fef3c7;color:#b45309}
+  .b-mianshi{background:#f3e8ff;color:#7c3aed}
+  .b-offer{background:#dcfce7;color:var(--green)}
+  .b-gua{background:#fee2e2;color:var(--red)}
   /* 任务清单 */
   .todo{display:flex;align-items:center;gap:10px;padding:10px 6px;border-bottom:1px dashed var(--line)}
   .todo input[type=checkbox]{width:18px;height:18px;accent-color:var(--blue);flex:none}
@@ -77,7 +77,7 @@
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1f2d3d;color:#fff;padding:10px 22px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .3s}
   .hidden{display:none!important}
   .pagination{margin-top:12px;display:flex;gap:8px;align-items:center}
-  .track‑hint{font-size:12px;margin:8px 0;color:var(--sub)}
+  .track-hint{font-size:12px;margin:8px 0;color:var(--sub)}
   @media(max-width:720px){.top h1{font-size:20px}.stat{min-width:100px;padding:8px 12px}}
 </style>
 </head>
@@ -132,11 +132,11 @@
   <div class="card">
     <h2><span class="dot"></span>投递记录（数据源：谷歌表格SheetDB）</h2>
     <div class="hint">漏斗口径：投递 → 笔试 → 面试 → Offer。请前往谷歌表格编辑新增/修改记录。</div>
-    <div class="track‑hint">
+    <div class="track-hint">
       <a target="_blank" href="https://docs.google.com/spreadsheets/d/1pZibBHK5wH1xPzjgqitO7icttGaMlJP5RdCpOPwMi7w/edit?gid=0#gid=0">👉点击跳转谷歌表格编辑投递数据</a>
       <span id="trackLoadTip">｜正在加载云端投递数据…</span>
     </div>
-    <div style="overflow‑x:auto">
+    <div style="overflow-x:auto">
     <table id="trackTable">
       <thead><tr>
         <th style="width:130px">公司</th><th style="width:150px">岗位</th><th style="width:100px">方向</th>
@@ -185,7 +185,7 @@
       <select id="studyCat" style="width:120px">
         <option>SQL</option><option>Python</option><option>行测</option><option>面试</option>
       </select>
-      <input id="studyTask" placeholder="任务，如：牛客SQL真题 非技术快速入门 第11‑20题" style="flex:1;min-width:200px">
+      <input id="studyTask" placeholder="任务，如：牛客SQL真题 非技术快速入门 第11-20题" style="flex:1;min-width:200px">
       <button class="btn" onclick="addStudy()">添加</button>
     </div>
   </div>
@@ -224,7 +224,7 @@
     <p style="font-size:14px;margin-bottom:10px">华北电力大学（北京） 应用统计 硕士 · 2027届 · 专业排名 5/68<br>
     本科：北华大学 应用统计 · 排名 7/49</p>
     <span class="pill">Python</span><span class="pill">SQL</span><span class="pill">R</span><span class="pill">PowerBI</span><span class="pill">机器学习/深度学习</span><span class="pill">AI Agent 工作流</span>
-    <div style="margin‑top:16px;font‑size:13px;color:#405060;line‑height:2">
+    <div style="margin-top:16px;font-size:13px;color:#405060;line-height:2">
       <b>百度</b>（2026.04–2026.08）数据产品经理：搜索业务数据需求全链路，累计承接需求40+；搭建通用指标体系，需求效率 3–5个/周 → 8–10个/周；搭建AI工作流并与研发Agent对接。<br>
       <b>字节跳动</b>（2025.10–2026.04）产品运营：独立完成3次用户调研，13条建议被采纳带动DAU +0.5%；营销券体验专项主要负责人，券CPO 38→34；电商营销数据看板与AB实验监控。<br>
       <b>作业帮</b>（2025.04–2025.08）用户数据运营：搭建客户奖惩运营体系，客户体量 +80%；主导反作弊项目，作弊率 2%→0.3%。<br>
@@ -233,7 +233,7 @@
     </div>
   </div>
 </section>
-<div class="footer‑bar">
+<div class="footer-bar">
   <button class="btn ghost" onclick="exportData()">导出备份(JSON)</button>
   <button class="btn ghost" onclick="document.getElementById('importFile').click()">导入备份</button>
   <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
@@ -244,7 +244,7 @@
 <script>
 var KEY='wj_jobhub_v1';
 const SHEETDB_API = "https://sheetdb.io/api/v1/abnf0u7zz6ap5";
-const PAGE_SIZE = 8; //每页8条
+const PAGE_SIZE = 8;
 let sheetTrackList = [];
 let currentPage = 1;
 
@@ -256,18 +256,18 @@ var DEFAULT={
     {t:'行测一组（限时）',done:false},
     {t:'面试题库开口练习 2 题',done:false}
   ],
-  tracks:[], //投递记录改为云端表格，本地不再存储
+  tracks:[],
   opps:[
     {name:'百度',desc:'数据产品经理（实习回流优先，联系 mentor）'},
     {name:'字节跳动',desc:'数据分析师 / 产品运营，找实习同事内推'},
     {name:'美团',desc:'数据产品经理，官网秋招第二批'},
     {name:'快手',desc:'数据分析师，校招官网'},
-    {name:'银行数字化岗',desc:'工行/招行/券商金科，10‑12月集中开放'}
+    {name:'银行数字化岗',desc:'工行/招行/券商金科，10-12月集中开放'}
   ],
   study:[
     {cat:'SQL',tasks:[{t:'牛客SQL真题：非技术快速入门全部',done:true},{t:'窗口函数专题 10 题',done:false},{t:'业务场景SQL（留存/漏斗）10 题',done:false}]},
     {cat:'行测',tasks:[{t:'言语理解 2 组',done:false},{t:'资料分析 2 组（提速度）',done:false}]},
-    {cat:'面试',tasks:[{t:'产品Sense 30题：指标体系类',done:false},{t:'统计基础：AB实验/假设检验/功效',done:false},{t:'CM‑DUW 论文 15 分钟完整讲述',done:false}]},
+    {cat:'面试',tasks:[{t:'产品Sense 30题：指标体系类',done:false},{t:'统计基础：AB实验/假设检验/功效',done:false},{t:'CM-DUW 论文 15 分钟完整讲述',done:false}]},
     {cat:'Python',tasks:[{t:'pandas 数据处理 5 道真题',done:false}]}
   ],
   qa:[
@@ -277,7 +277,7 @@ var DEFAULT={
     {q:'实习中最大的困难？',a:'百度：多需求并发下的口径冲突 → 建通用指标体系+AI工作流标准化',lv:0},
     {q:'为什么从运营转数据产品？',a:'运营中发现需求落地链路效率低 → 更想做标准化工具与机制 → 百度验证',lv:0}
   ],
-  revs:[{d:'2026‑11‑05',t:'（示例）某厂一面：指标异动排查思路不清。改进：背"维度拆分→内外因→AB定位"框架，再练2题'}],
+  revs:[{d:'2026-11-05',t:'（示例）某厂一面：指标异动排查思路不清。改进：背"维度拆分→内外因→AB定位"框架，再练2题'}],
   weekly:'', manifesto:'统计背景 + 4段数据驱动实习 + 数据产品落地经验，擅长用数据指标体系解决业务问题，并能用 AI 工具提效的数据产品经理。'
 };
 var D;
@@ -289,7 +289,6 @@ function load(){
 function save(){localStorage.setItem(KEY,JSON.stringify(D));}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.style.opacity=1;setTimeout(function(){t.style.opacity=0;},1600);}
 
-//加载SheetDB云端投递数据
 async function loadSheetDbTracks(){
   const tipDom = document.getElementById("trackLoadTip");
   tipDom.textContent = "｜正在加载云端投递数据…";
@@ -320,29 +319,33 @@ async function loadSheetDbTracks(){
   }
 }
 
-//分页渲染投递表格
 function renderTracksPaged(){
   const tb=document.getElementById('trackBody');
   tb.innerHTML='';
   const total = sheetTrackList.length;
   const totalPage = Math.ceil(total / PAGE_SIZE);
   if(currentPage>totalPage && totalPage>0) currentPage = totalPage;
-  const startIdx = (currentPage‑1)*PAGE_SIZE;
+  const startIdx = (currentPage-1)*PAGE_SIZE;
   const pageData = sheetTrackList.slice(startIdx, startIdx+PAGE_SIZE);
 
   pageData.forEach(function(r){
+    let cls = "b-touzhong";
+    if(r.st === "笔试") cls = "b-bishi";
+    else if(r.st === "面试") cls = "b-mianshi";
+    else if(r.st === "Offer") cls = "b-offer";
+    else if(r.st === "挂") cls = "b-gua";
+
     var tr=document.createElement('tr');
     tr.innerHTML='<td>'+escapeHtml(r.co)+'</td><td>'+escapeHtml(r.job)+'</td>'+
       '<td>'+escapeHtml(r.dir)+'</td><td>'+escapeHtml(r.ch)+'</td><td>'+escapeHtml(r.date)+'</td>'+
-      '<td><span class="badge b‑'+(r.st||"投递中")+'">'+escapeHtml(r.st)+'</span></td><td>'+escapeHtml(r.next)+'</td>';
+      '<td><span class="badge '+cls+'">'+escapeHtml(r.st)+'</span></td><td>'+escapeHtml(r.next)+'</td>';
     tb.appendChild(tr);
   });
 
-  //渲染分页按钮
   const pgDom = document.getElementById("trackPagination");
   pgDom.innerHTML="";
   if(totalPage<=1) return;
-  pgDom.append(createPgBtn("上一页", ()=>{if(currentPage>1){currentPage‑‑;renderTracksPaged();}}));
+  pgDom.append(createPgBtn("上一页", ()=>{if(currentPage>1){currentPage--;renderTracksPaged();}}));
   pgDom.append(document.createTextNode(`第${currentPage}/${totalPage}页`));
   pgDom.append(createPgBtn("下一页", ()=>{if(currentPage<totalPage){currentPage++;renderTracksPaged();}}));
 }
@@ -358,7 +361,6 @@ function createPgBtn(text, onClick){
   return btn;
 }
 
-//基于云端数据计算顶部统计
 function renderStatsByCloud(){
   const list = sheetTrackList;
   var t=list.length;
@@ -371,20 +373,17 @@ function renderStatsByCloud(){
   document.getElementById('stRate').textContent=(t?Math.round(iv/t*100):0)+'%';
 }
 
-/* 导航 */
 document.getElementById('nav').addEventListener('click',function(e){
   var b=e.target.closest('button');if(!b)return;
   document.querySelectorAll('nav button').forEach(function(x){x.classList.remove('active')});
   b.classList.add('active');
   document.querySelectorAll('section.page').forEach(function(s){s.classList.remove('show')});
-  document.getElementById('page‑'+b.dataset.page).classList.add('show');
-  //切到投递标签页，刷新云端数据
+  document.getElementById('page-'+b.dataset.page).classList.add('show');
   if(b.dataset.page === "track"){
     loadSheetDbTracks();
   }
 });
 
-/* 今日任务 */
 function renderTodos(){
   var box=document.getElementById('todoList');box.innerHTML='';
   D.todos.forEach(function(o,i){
@@ -399,7 +398,6 @@ function toggleTodo(i){D.todos[i].done=!D.todos[i].done;save();renderTodos();}
 function delTodo(i){D.todos.splice(i,1);save();renderTodos();}
 document.getElementById('todoInput').addEventListener('keydown',function(e){if(e.key==='Enter')addTodo();});
 
-/* 机会 */
 function renderOpps(){
   var box=document.getElementById('oppList');box.innerHTML='';
   D.opps.forEach(function(o,i){
@@ -414,13 +412,12 @@ function addOpp(){
   var n=document.getElementById('oppName').value.trim(),c=document.getElementById('oppDesc').value.trim();
   if(!n)return;D.opps.push({name:n,desc:c});document.getElementById('oppName').value='';document.getElementById('oppDesc').value='';save();renderOpps();
 }
-/* 学习 */
 function catPct(cat){var a=cat.tasks;if(!a.length)return 0;var d=a.filter(function(x){return x.done}).length;return Math.round(d/a.length*100);}
 function renderStudy(){
   var box=document.getElementById('studyList');box.innerHTML='';
   D.study.forEach(function(cat,ci){
     var pct=catPct(cat);
-    var h='<div class="prog"><div class="lbl"><b>'+cat.cat+'</b><span>'+pct+'%　<a href="#" onclick="setPct('+ci+');return false" style="font‑size:12px">手动调整</a></span></div><div class="bar"><i style="width:'+pct+'%"></i></div></div>';
+    var h='<div class="prog"><div class="lbl"><b>'+cat.cat+'</b><span>'+pct+'%　<a href="#" onclick="setPct('+ci+');return false" style="font-size:12px">手动调整</a></span></div><div class="bar"><i style="width:'+pct+'%"></i></div></div>';
     cat.tasks.forEach(function(tk,ti){
       h+='<div class="todo'+(tk.done?' done':'')+'"><input type="checkbox" '+(tk.done?'checked':'')+' onchange="toggleStudy('+ci+','+ti+')"><span class="txt"></span><button class="btn danger sm" onclick="delStudy('+ci+','+ti+')">删</button></div>';
     });
@@ -429,7 +426,7 @@ function renderStudy(){
   });
 }
 function setPct(ci){
-  var v=prompt('输入百分比 0‑100（仅手动记录用，任务勾选仍是主口径）','');if(v===null)return;
+  var v=prompt('输入百分比 0-100（仅手动记录用，任务勾选仍是主口径）','');if(v===null)return;
   toast('已记录：'+D.study[ci].cat+' '+v+'%');
 }
 function toggleStudy(ci,ti){D.study[ci].tasks[ti].done=!D.study[ci].tasks[ti].done;save();renderStudy();}
@@ -440,13 +437,12 @@ function addStudy(){
   if(!cat){cat={cat:c,tasks:[]};D.study.push(cat);}
   cat.tasks.push({t:t,done:false});document.getElementById('studyTask').value='';save();renderStudy();
 }
-/* 题库 */
 var LV=['○','○○','○○○'];
 function renderQa(){
   var box=document.getElementById('qaList');box.innerHTML='';
   D.qa.forEach(function(o,i){
     var d=document.createElement('div');d.className='qa';
-    d.innerHTML='<div class="q"><span class="qt"></span><span style="white‑space:nowrap;cursor:pointer" title="点击切换掌握度" onclick="lvQa('+i+')"></span></div><div class="a"></div><div style="margin‑top:8px"><button class="btn danger sm" onclick="delQa('+i+')">删除</button></div>';
+    d.innerHTML='<div class="q"><span class="qt"></span><span style="white-space:nowrap;cursor:pointer" title="点击切换掌握度" onclick="lvQa('+i+')"></span></div><div class="a"></div><div style="margin-top:8px"><button class="btn danger sm" onclick="delQa('+i+')">删除</button></div>';
     d.querySelector('.qt').textContent=o.q;d.querySelector('.a').textContent=o.a||'（待补充要点）';
     d.querySelector('[title]').textContent=LV[o.lv]||'○';
     box.appendChild(d);
@@ -458,13 +454,12 @@ function addQa(){
   var q=document.getElementById('qaQ').value.trim(),a=document.getElementById('qaA').value.trim();if(!q)return;
   D.qa.push({q:q,a:a,lv:0});document.getElementById('qaQ').value='';document.getElementById('qaA').value='';save();renderQa();
 }
-/* 复盘 */
 function renderRevs(){
   var box=document.getElementById('revList');box.innerHTML='';
   D.revs.slice().reverse().forEach(function(r){
     var idx=D.revs.indexOf(r);
     var d=document.createElement('div');d.className='todo';
-    d.innerHTML='<b style="flex:none;font‑size:13px;color:var(--sub)"></b><span class="txt" style="font‑size:13px"></span><button class="btn danger sm">删</button>';
+    d.innerHTML='<b style="flex:none;font-size:13px;color:var(--sub)"></b><span class="txt" style="font-size:13px"></span><button class="btn danger sm">删</button>';
     d.querySelector('b').textContent=r.d;d.querySelector('.txt').textContent=r.t;
     d.querySelector('button').onclick=function(){D.revs.splice(idx,1);save();renderRevs();};
     box.appendChild(d);
@@ -475,19 +470,16 @@ function addRev(){
   var t=document.getElementById('revText').value.trim();if(!t)return;
   D.revs.push({d:d,t:t});document.getElementById('revText').value='';save();renderRevs();
 }
-/* 文本区 */
 function bindText(id,field){
   var el=document.getElementById(id);el.value=D[field]||'';
   el.addEventListener('input',function(){D[field]=el.value;save();});
 }
-/* 倒计时 */
 function tick(){
-  var end=new Date('2027‑06‑30T00:00:00');
-  var now=new Date();var days=Math.max(0,Math.ceil((end‑now)/86400000));
+  var end=new Date('2027-06-30T00:00:00');
+  var now=new Date();var days=Math.max(0,Math.ceil((end-now)/86400000));
   var el=document.getElementById('countdown');
   el.textContent=days+' 天';
 }
-/* 导入导出 */
 function exportData(){
   var blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='秋招数据备份.json';a.click();
@@ -513,10 +505,9 @@ function init(){
   loadSheetDbTracks();
 }
 load();init();setInterval(tick,60000);
-//每30秒自动刷新云端投递数据
 setInterval(()=>{
   const activePage = document.querySelector(".page.show");
-  if(activePage && activePage.id === "page‑track"){
+  if(activePage && activePage.id === "page-track"){
     loadSheetDbTracks();
   }
 },30000);
