@@ -4,7 +4,7 @@ content:
     label: 秋招看板
     type: file
     path: index.html
-    format: raw
+    format: code
     fields:
       - name: source
         label: HTML 源码
