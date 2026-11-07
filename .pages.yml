@@ -1,0 +1,12 @@
+media: media
+content:
+  - name: resume-board
+    label: 秋招看板
+    type: file
+    path: index.html
+    format: raw
+    fields:
+      - name: source
+        label: HTML 源码
+        type: code
+        component: html
