@@ -75,7 +75,7 @@
   .opp .desc{font-size:13px;color:#405060;flex:1}
   .footer-bar{display:flex;gap:10px;justify-content:flex-end;margin-top:24px;flex-wrap:wrap}
   .pill{display:inline-block;background:var(--blue-l);color:var(--blue);border-radius:99px;padding:3px 12px;font-size:12px;margin:3px 4px 0 0}
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1f2d3d;color:#fff;padding:10px 22px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .3s}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1f2d3d;color:#fff;padding:10px 22px;border-radius:99px;font-size:99px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .3s}
   .hidden{display:none!important}
   .track-hint{font-size:12px;margin:8px 0;color:var(--sub)}
   .track-scroll-wrap{max-height:420px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;}
@@ -135,7 +135,8 @@
     <div class="hint">漏斗口径：投递 → 笔试 → 面试 → Offer。请前往谷歌表格编辑新增/修改记录。点击表头可切换升序/降序。</div>
     <div class="track-hint">
       <a target="_blank" href="https://docs.google.com/spreadsheets/d/1pZibBHK5wH1xPzjgqitO7icttGaMlJP5RdCpOPwMi7w/edit?gid=0#gid=0">👉点击跳转谷歌表格编辑投递数据</a>
-      <span id="trackLoadTip">｜正在加载云端投递数据…</span>
+      <span id="trackLoadTip">｜等待首次拉取</span>
+      <button class="btn sm ghost" style="margin-left:8px" onclick="loadSheetDbTracks(true)">手动同步</button>
     </div>
     <div style="margin:10px 0;">
       <input id="trackFilterInput" placeholder="筛选：公司 / 岗位 / 方向 / 渠道 / 状态 / 下一步动作" style="width:100%;">
@@ -256,8 +257,10 @@
 var KEY='wj_jobhub_v1';
 const SHEETDB_API = "https://sheetdb.io/api/v1/abnf0u7zz6ap5";
 let sheetTrackList = [];
+let sheetTrackCached = [];
 let sortField = "date";
 let sortAsc = false;
+let hasFetchedOnce = false;
 
 var STATUS=['投递中','笔试','面试','Offer','挂'];
 var DEFAULT={
@@ -300,12 +303,19 @@ function load(){
 function save(){localStorage.setItem(KEY,JSON.stringify(D));}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.style.opacity=1;setTimeout(function(){t.style.opacity=0;},1600);}
 
-async function loadSheetDbTracks(){
+async function loadSheetDbTracks(force){
   const tipDom = document.getElementById("trackLoadTip");
-  tipDom.textContent = "｜正在加载云端投递数据…";
+  if(!force && hasFetchedOnce){
+    sheetTrackList = sheetTrackCached;
+    applyFilterSortRender();
+    renderStatsByCloud();
+    tipDom.textContent = "｜使用页面缓存（点手动同步拉新）";
+    return;
+  }
+  tipDom.textContent = "｜正在请求 SheetDB（消耗额度）";
   try{
     const res = await fetch(SHEETDB_API);
-    if(!res.ok) throw new Error("请求异常");
+    if(!res.ok) throw new Error("请求超限或权限错误");
     const raw = await res.json();
     sheetTrackList = raw.map(row=>{
       return {
@@ -318,13 +328,15 @@ async function loadSheetDbTracks(){
         next: row.next||""
       }
     });
-    tipDom.textContent = "｜数据加载成功（数据源谷歌表格）";
+    sheetTrackCached = JSON.parse(JSON.stringify(sheetTrackList));
+    hasFetchedOnce = true;
+    tipDom.textContent = "｜同步成功，已缓存";
     applyFilterSortRender();
     renderStatsByCloud();
   }catch(err){
     console.error(err);
-    tipDom.textContent = "｜⚠️云端数据加载失败，请检查网络、SheetDB、谷歌表格权限";
-    sheetTrackList = [];
+    tipDom.textContent = "｜⚠️ 请求失败（额度耗尽/网络），正在使用旧缓存";
+    sheetTrackList = sheetTrackCached;
     applyFilterSortRender();
     renderStatsByCloud();
   }
@@ -333,7 +345,6 @@ async function loadSheetDbTracks(){
 function applyFilterSortRender(){
   const kw = (document.getElementById("trackFilterInput").value || "").toLowerCase().trim();
   let arr = sheetTrackList.slice();
-  //筛选
   if(kw){
     arr = arr.filter(r=>{
       return (r.co.toLowerCase().includes(kw)
@@ -344,7 +355,6 @@ function applyFilterSortRender(){
         || r.next.toLowerCase().includes(kw));
     });
   }
-  //排序
   arr.sort((a,b)=>{
     let va = a[sortField] || "";
     let vb = b[sortField] || "";
@@ -398,7 +408,6 @@ function renderStatsByCloud(){
   document.getElementById('stRate').textContent=(t?Math.round(iv/t*100):0)+'%';
 }
 
-//表头点击排序
 document.querySelector("#trackTable thead").addEventListener("click",e=>{
   const th = e.target.closest(".sort-th");
   if(!th) return;
@@ -412,7 +421,6 @@ document.querySelector("#trackTable thead").addEventListener("click",e=>{
   applyFilterSortRender();
 });
 
-//搜索框实时筛选
 document.getElementById("trackFilterInput").addEventListener("input",()=>{
   applyFilterSortRender();
 });
@@ -424,7 +432,7 @@ document.getElementById('nav').addEventListener('click',function(e){
   document.querySelectorAll('section.page').forEach(function(s){s.classList.remove('show')});
   document.getElementById('page-'+b.dataset.page).classList.add('show');
   if(b.dataset.page === "track"){
-    loadSheetDbTracks();
+    loadSheetDbTracks(false);
   }
 });
 
@@ -546,15 +554,8 @@ function init(){
   renderRevs();
   bindText('weeklyFocus','weekly');bindText('manifesto','manifesto');
   tick();
-  loadSheetDbTracks();
 }
 load();init();setInterval(tick,60000);
-setInterval(()=>{
-  const activePage = document.querySelector(".page.show");
-  if(activePage && activePage.id === "page-track"){
-    loadSheetDbTracks();
-  }
-},30000);
 </script>
 </body>
 </html>
